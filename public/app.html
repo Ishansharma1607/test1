@@ -8,40 +8,47 @@
   <link href="/styles/globals.css" rel="stylesheet">
 </head>
 <body class="flex items-center justify-center h-screen bg-gray-100">
-  <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
-    <h2 class="text-2xl font-bold mb-6 text-center">Enter Your Text</h2>
-    <form id="textForm" class="space-y-4">
-      <div>
-        <label for="text" class="block text-sm font-medium text-gray-700">Text</label>
-        <textarea id="text" name="text" rows="10" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"></textarea>
+  <div class="w-full max-w-2xl">
+    <form id="textForm" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <h2 class="text-2xl font-bold mb-6 text-center">Enter Text</h2>
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="textContent">
+          Text Content
+        </label>
+        <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="textContent" rows="10" placeholder="Enter your text here..."></textarea>
       </div>
-      <div>
-        <button type="submit" class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">Save</button>
+      <div class="flex items-center justify-between">
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button" onclick="saveText()">
+          Save
+        </button>
       </div>
     </form>
   </div>
   <script>
-    document.getElementById('textForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const text = document.getElementById('text').value;
+    async function saveText() {
+      const textContent = document.getElementById('textContent').value;
+
       const response = await fetch('/api/save-text', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ textContent })
       });
+
       if (response.ok) {
         alert('Text saved successfully');
       } else {
         alert('Failed to save text');
       }
-    });
+    }
 
     async function loadText() {
       const response = await fetch('/api/load-text');
-      const data = await response.json();
-      document.getElementById('text').value = data.text;
+      if (response.ok) {
+        const data = await response.json();
+        document.getElementById('textContent').value = data.textContent;
+      }
     }
 
     window.onload = loadText;

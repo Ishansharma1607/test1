@@ -10,6 +10,7 @@ app.use(session({
   secret: 'secret-key',
   resave: false,
   saveUninitialized: true,
+  cookie: { secure: false } // Set to true if using HTTPS
 }));
 
 const predefinedUsername = 'admin';
@@ -30,4 +31,12 @@ app.get('/api/logout', (req, res) => {
   res.redirect('/login.html');
 });
 
-module.exports = app;
+const authMiddleware = (req, res, next) => {
+  if (req.session && req.session.user) {
+    next();
+  } else {
+    res.redirect('/login');
+  }
+};
+
+module.exports = { app, authMiddleware };
