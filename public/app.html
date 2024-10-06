@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application</title>
+  <link href="/styles/globals.css" rel="stylesheet">
+</head>
+<body class="flex items-center justify-center h-screen bg-gray-100">
+  <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
+    <h2 class="text-2xl font-bold mb-6 text-center">Enter Your Text</h2>
+    <form id="textForm" class="space-y-4">
+      <div>
+        <label for="text" class="block text-sm font-medium text-gray-700">Text</label>
+        <textarea id="text" name="text" rows="10" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"></textarea>
+      </div>
+      <div>
+        <button type="submit" class="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">Save</button>
+      </div>
+    </form>
+  </div>
+  <script>
+    document.getElementById('textForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = document.getElementById('text').value;
+      const response = await fetch('/api/save-text', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text }),
+      });
+      if (response.ok) {
+        alert('Text saved successfully');
+      } else {
+        alert('Failed to save text');
+      }
+    });
+
+    async function loadText() {
+      const response = await fetch('/api/load-text');
+      const data = await response.json();
+      document.getElementById('text').value = data.text;
+    }
+
+    window.onload = loadText;
+  </script>
+</body>
+</html>
